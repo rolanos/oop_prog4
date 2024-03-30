@@ -4,10 +4,11 @@
 class Matrix {
 
 private:
+    //Размерность
     int dimension;
-
+    //Двумерный динамический массив - матрица
     number** matrix;
-
+    //Создать матрицу с заданным размером
     void createMatrixWithDimension(int n);
 
 public:

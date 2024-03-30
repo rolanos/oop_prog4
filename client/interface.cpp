@@ -132,9 +132,15 @@ void TInterface::answer(QString msg)
         //Инициализируем выходную матрицу данными, которые пришли нам в ответ от server
         martixOutput->setRowCount(size);
         martixOutput->setColumnCount(size);
-        for (int row = 0; row < size; ++row) {
-            for (int column = 0; column < size; ++column) {
-                 martixOutput->item(row, column)->setText(response[row*size+column]);
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                 QTableWidgetItem *item = martixOutput->item(row, column);
+                if(!item) {
+                     item = new QTableWidgetItem();
+                     item->setText(response[row*size+column]);
+                     martixOutput->setItem(row, column, item);
+                }
+
             }
         }
         return;

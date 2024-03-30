@@ -57,10 +57,17 @@ void TApplication::recieve(QByteArray msg)
     case PRINT_TRANSPOSE_REQUEST: {
             //Вычисление транспонированной матрицы
             responseMatrix = matrix->calculateTranspose();
+            answer << QString().number(responseMatrix.getDimension());
             for (int row = 0; row < responseMatrix.getDimension(); ++row) {
                 for (int column = 0; column < responseMatrix.getDimension(); ++column) {
                     QString bufferStr;
-                    bufferStr << QString::number(responseMatrix(row, column).numerator) + QString('/') + QString::number(responseMatrix(row, column).denominator);
+                    number elem = responseMatrix(row, column);
+                    if(elem.denominator != 1) {
+                        bufferStr << QString::number(elem.numerator) + QString('/') + QString::number(elem.denominator);
+                    }
+                    else {
+                        bufferStr << QString::number(elem.numerator);
+                    }
                     answer += bufferStr;
                 }
             }

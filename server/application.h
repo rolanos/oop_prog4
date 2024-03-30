@@ -9,7 +9,7 @@
 class TApplication : public QCoreApplication
 {
     Q_OBJECT
-
+    //Класс-коммуникатор
     TCommunicator *communicator;
 
 public:
