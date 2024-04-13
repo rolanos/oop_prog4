@@ -1,42 +1,29 @@
-#include"matrix.h"
-#include <cmath>
+#include "matrix.h"
 
-#define DIMENSION 4
-#define INITIAL_VALUE 0.0
+Matrix::Matrix() : Matrix::Matrix(0, 0) {}
 
-Matrix& Matrix::operator=(const Matrix& other)
-{
-    if (other.dimension == this->dimension)
+Matrix::Matrix(int row, int column) {
+    if(row == column) {
+        dimension = row;
+    }
+    rowNumber = row;
+    columnNumber = column;
+
+    matrix = new number*[rowNumber];
+
+    for (int i = 0; i < rowNumber; i++)
     {
-        for (int i = 0; i < dimension; i++)
+        matrix[i] = new number[columnNumber];
+        for (int j = 0; j < columnNumber; j++)
         {
-            for (int j = 0; j < dimension; j++)
-            {
-                this->matrix[i][j] = other.matrix[i][j];
-            }
+            matrix[i][j] = number();
         }
     }
-
-    return *this;
-}
-
-number& Matrix::operator() (const int i, const int j) {
-    return matrix[i][j];
-}
-
-Matrix::Matrix(){
-    dimension = DIMENSION;
-    createMatrixWithDimension(dimension);
-}
-
-Matrix::Matrix(int n) {
-    dimension = n;
-    createMatrixWithDimension(dimension);
 }
 
 Matrix::~Matrix() {
 
-    for (int i = 0; i < dimension; i++)
+    for (int i = 0; i < rowNumber; i++)
     {
         delete[] matrix[i];
     }
@@ -44,54 +31,20 @@ Matrix::~Matrix() {
     delete[] matrix;
 }
 
+number& Matrix::operator() (const int i, const int j) {
+    return matrix[i][j];
+}
+
+
 void Matrix::inputValue(number value, int row, int column) {
     matrix[row][column] = value;
 }
 
-number Matrix::calculateDetermenant() {
-    number determenant = number(1, 1);
-    Matrix mat = Matrix(dimension);
-
-    for (int i = 0; i < dimension; i++)
-    {
-        for (int j = 0; j < dimension; j++)
-        {
-            mat.matrix[i][j] = this->matrix[i][j];
-        }
-    }
-    for (int i = 0; i < dimension; i++) {
-        int pivot = i;
-
-        for (int j = i + 1; j < dimension; j++) {
-            if (abs(mat.matrix[j][i]) > abs(mat.matrix[pivot][i])) {
-                pivot = j;
-            }
-        }
-        if (pivot != i) {
-            swap(mat.matrix[i], mat.matrix[pivot]);
-            determenant = determenant * (-1);
-        }
-
-        if (mat.matrix[i][i] == 0.0) {
-            return number();
-        }
-        determenant = determenant * mat.matrix[i][i];
-
-        for (int j = i + 1; j < dimension; j++) {
-            number fact = mat.matrix[j][i] / mat.matrix[i][i];
-            for (int k = i + 1; k < dimension; k++) {
-                mat.matrix[j][k] = mat.matrix[j][k] - fact * mat.matrix[i][k];
-            }
-        }
-    }
-    return determenant;
-}
-
 Matrix& Matrix::calculateTranspose() {
-    Matrix* transpose = new Matrix(dimension);
-    for (int i = 0; i < dimension; i++)
+    Matrix* transpose = new Matrix(columnNumber, rowNumber);
+    for (int i = 0; i < rowNumber; i++)
     {
-        for (int j = 0; j < dimension; j++)
+        for (int j = 0; j < columnNumber; j++)
         {
             transpose->matrix[i][j] = matrix[j][i];
         }
@@ -99,13 +52,29 @@ Matrix& Matrix::calculateTranspose() {
     return *transpose;
 }
 
-int Matrix::getRank() {
-    int rank = dimension;
-    Matrix mat = Matrix(dimension);
+void Matrix::swapRows(int first, int second) {
+    swap(matrix[first], matrix[second]);
+}
 
-    for (int i = 0; i < dimension; i++)
+bool Matrix::isSqare() {
+    return rowNumber == columnNumber;
+}
+
+int Matrix::getRowNumber() {
+    return rowNumber;
+}
+
+int Matrix::getColumnNumber() {
+    return columnNumber;
+}
+
+int Matrix::getRank() {
+    int rank = rowNumber;
+    Matrix mat = Matrix(rowNumber, columnNumber);
+
+    for (int i = 0; i < rowNumber; i++)
     {
-        for (int j = 0; j < dimension; j++)
+        for (int j = 0; j < columnNumber; j++)
         {
             mat.matrix[i][j] = this->matrix[i][j];
         }
@@ -115,7 +84,7 @@ int Matrix::getRank() {
     {
         if (mat.matrix[row][row])
         {
-            for (int column = 0; column < mat.dimension; column++)
+            for (int column = 0; column < mat.columnNumber; column++)
             {
                 if (column != row)
                 {
@@ -130,7 +99,7 @@ int Matrix::getRank() {
         else
         {
             bool cut = true;
-            for (int i = row + 1; i < mat.dimension; i++)
+            for (int i = row + 1; i < mat.rowNumber; i++)
             {
                 if (mat.matrix[i][row])
                 {
@@ -148,7 +117,8 @@ int Matrix::getRank() {
             if (cut)
             {
                 rank--;
-                for (int i = 0; i < mat.dimension; i++)
+                //???
+                for (int i = 0; i < mat.columnNumber; i++)
                     mat.matrix[i][row] = mat.matrix[i][rank];
             }
 
@@ -156,23 +126,4 @@ int Matrix::getRank() {
         }
     }
     return rank;
-}
-
-
-
-int Matrix::getDimension() {
-    return dimension;
-}
-
-void Matrix::createMatrixWithDimension(int n) {
-    matrix = new number*[n];
-
-    for (int i = 0; i < n; i++)
-    {
-        matrix[i] = new number[n];
-        for (int j = 0; j < n; j++)
-        {
-            matrix[i][j] = number();
-        }
-    }
 }

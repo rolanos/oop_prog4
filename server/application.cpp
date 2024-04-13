@@ -1,6 +1,6 @@
 #include "common.h"
 #include "application.h"
-#include "matrix.h"
+#include "sqare_matrix.h"
 
 //Инициализация работы серверного приложения
 TApplication::TApplication(int argc, char *argv[])
@@ -31,7 +31,7 @@ void TApplication::recieve(QByteArray msg)
     //Очищаем последнее значение - номер запроса
     numbers.removeLast();
 
-    Matrix* matrix = new Matrix(matrixSize);
+    SqareMatrix* matrix = new SqareMatrix(matrixSize);
     //Инициализируем матрицу, которую получили от клиента
     for (int row = 0; row < matrixSize; row++) {
         for (int column = 0; column < matrixSize; column++) {
@@ -50,7 +50,7 @@ void TApplication::recieve(QByteArray msg)
         }
     }
     //Матрица для ответа
-    Matrix responseMatrix = Matrix(matrixSize);
+    SqareMatrix responseMatrix = SqareMatrix(matrixSize);
     //Сообщаяем в консоли о сообщении
     qInfo("The message has been received");
     switch(query) {
