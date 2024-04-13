@@ -1,6 +1,6 @@
 #include "common.h"
 #include "application.h"
-#include "sqare_matrix.h"
+#include "square_matrix.h"
 
 //Инициализация работы серверного приложения
 TApplication::TApplication(int argc, char *argv[])

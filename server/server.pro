@@ -11,7 +11,7 @@ SOURCES += \
         rational.cpp \
         ../common/communicator.cpp \
         ../common/common.cpp \
-        sqare_matrix.cpp
+        square_matrix.cpp
 
 
 # Default rules for deployment.
@@ -26,6 +26,6 @@ HEADERS += \
     rational.h \
     ../common/communicator.h \
     ../common/common.h \
-    sqare_matrix.h
+    square_matrix.h
 
 INCLUDEPATH += ../common
