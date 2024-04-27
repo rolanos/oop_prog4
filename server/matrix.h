@@ -140,8 +140,6 @@ int Matrix<number>::getRank() {
                     number mult = mat.matrix[column][row] /
                                   mat.matrix[row][row];
                     for (int i = 0; i < rank; i++) {
-                        number a = mat.matrix[column][i];
-                        number b = mat.matrix[row][i];
                         mat.matrix[column][i] = mat.matrix[column][i] - mult * mat.matrix[row][i];
                     }
 
