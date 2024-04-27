@@ -6,12 +6,11 @@ QT += core network
 
 SOURCES += \
         application.cpp \
+        complex.cpp \
         main.cpp \
-        matrix.cpp \
         rational.cpp \
         ../common/communicator.cpp \
-        ../common/common.cpp \
-        square_matrix.cpp
+        ../common/common.cpp
 
 
 # Default rules for deployment.
@@ -21,8 +20,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     application.h \
-    matrix.h \
-    number.h \
+    complex.h \
     rational.h \
     ../common/communicator.h \
     ../common/common.h \

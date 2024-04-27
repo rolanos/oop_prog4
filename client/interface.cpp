@@ -6,7 +6,7 @@ TInterface::TInterface(QWidget *parent)
 {
     int width= 800;
     int height =480;
-    setWindowTitle("Клиент ПР_4");
+    setWindowTitle("Клиент ПР_5");
     setFixedSize(width, height);
 
     matrixSizeTitle = new QLabel("Размер матрицы:", this);

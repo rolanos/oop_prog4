@@ -14,6 +14,13 @@ enum Message
     PRINT_DETERMINANT_RESPONSE
 };
 
+enum NumberMode {
+
+    DOUBLE_MODE = 1,
+    COMPLEX_MODE,
+    RATIONAL_MODE,
+};
+
 extern const QChar separator;
 QString& operator<< (QString&,const QString&);
 
