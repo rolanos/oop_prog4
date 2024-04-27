@@ -21,6 +21,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     application.h \
     complex.h \
+    matrix.h \
     rational.h \
     ../common/communicator.h \
     ../common/common.h \

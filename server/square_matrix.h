@@ -60,6 +60,8 @@ number SqareMatrix<number>::calculateDetermenant() {
     number determenant = 1;
     SqareMatrix mat = SqareMatrix<number>(this->dimension);
 
+
+
     for (int i = 0; i < this->dimension; i++)
     {
         for (int j = 0; j < this->dimension; j++)
