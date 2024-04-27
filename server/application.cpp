@@ -29,15 +29,15 @@ void TApplication::recieve(QByteArray msg)
     int mode = numbers[1].toInt();
     int query = numbers.last().toInt();
 
-    //Очищаем первое значение - размерность
-    numbers.removeFirst();
     //Удаляем значение режима
     numbers.removeAt(1);
+    //Очищаем первое значение - размерность
+    numbers.removeFirst();
     //Очищаем последнее значение - номер запроса
     numbers.removeLast();
 
     switch (mode) {
-        case DOUBLE_MODE: {
+    case DOUBLE_MODE: {
         //Матрица для ответа
         SqareMatrix<double> responseMatrix = SqareMatrix<double>(matrixSize);
         //Сообщаяем в консоли о сообщении
@@ -47,18 +47,11 @@ void TApplication::recieve(QByteArray msg)
         for (int row = 0; row < matrixSize; row++) {
             for (int column = 0; column < matrixSize; column++) {
                 QString currentNumStr = numbers[row * matrixSize + column];
-                QStringList parts = currentNumStr.split('/');
-                switch (parts.length()) {
-                case 1:
-                    matrix->inputValue(parts[0].toInt(), row, column);
-                    break;
-                default:
-                    matrix->inputValue(0, row, column);
-                }
+                matrix->inputValue(currentNumStr.toDouble(), row, column);
             }
         }
         switch(query) {
-        case PRINT_TRANSPOSE_REQUEST: {
+            case PRINT_TRANSPOSE_REQUEST: {
 
                 //Вычисление транспонированной матрицы
                 responseMatrix = matrix->calculateTranspose();
@@ -94,32 +87,36 @@ void TApplication::recieve(QByteArray msg)
                 answer << QString().setNum(PRINT_RANK_RESPONSE);
                 break;
             }
-          }
         }
-        case COMPLEX_MODE: {
-            SqareMatrix<TComplex>* matrix = new SqareMatrix<TComplex>(matrixSize);
-            //Инициализируем матрицу, которую получили от клиента
-            for (int row = 0; row < matrixSize; row++) {
-                for (int column = 0; column < matrixSize; column++) {
-                    QString currentNumStr = numbers[row * matrixSize + column];
-                    QStringList parts = currentNumStr.split(' ');
-                    switch (parts.length()) {
-                    case 1:
-                        matrix->inputValue(TComplex(parts[0].toDouble(), 1), row, column);
-                        break;
-                    case 2:
-                        matrix->inputValue(TComplex(parts[0].toDouble(), parts[1].toDouble()), row, column);
-                        break;
-                    default:
-                        matrix->inputValue(TComplex(), row, column);
-                    }
+        break;
+    }
+    case COMPLEX_MODE: {
+        SqareMatrix<TComplex>* matrix = new SqareMatrix<TComplex>(matrixSize);
+        //Инициализируем матрицу, которую получили от клиента
+        for (int row = 0; row < matrixSize; row++) {
+            for (int column = 0; column < matrixSize; column++) {
+                QString currentNumStr = numbers[row * matrixSize + column];
+                QStringList partsPositive = currentNumStr.split('+');
+                QStringList partsNegative = currentNumStr.split('-');
+                QStringList parts = partsPositive.length() >= partsNegative.length() ? partsPositive : partsNegative;
+
+                switch (parts.length()) {
+                case 1:
+                    matrix->inputValue(TComplex(parts[0].toDouble(), 0), row, column);
+                    break;
+                case 2:
+                    matrix->inputValue(TComplex(parts[0].toDouble(), parts[1].toDouble()), row, column);
+                    break;
+                default:
+                    matrix->inputValue(TComplex(), row, column);
                 }
             }
-            //Матрица для ответа
-            SqareMatrix<TComplex> responseMatrix = SqareMatrix<TComplex>(matrixSize);
-            //Сообщаяем в консоли о сообщении
-            qInfo("The message has been received");
-            switch(query) {
+        }
+        //Матрица для ответа
+        SqareMatrix<TComplex> responseMatrix = SqareMatrix<TComplex>(matrixSize);
+        //Сообщаяем в консоли о сообщении
+        qInfo("The message has been received");
+        switch(query) {
             case PRINT_TRANSPOSE_REQUEST: {
                 //Вычисление транспонированной матрицы
                 responseMatrix = matrix->calculateTranspose();
@@ -135,7 +132,7 @@ void TApplication::recieve(QByteArray msg)
                         else {
                             separator = QString("-");
                         }
-                        bufferStr << QString::number(elem.getReal()) + separator + QString::number(elem.getImaginary());
+                        bufferStr << QString::number(elem.getReal()) + separator + QString::number(elem.getImaginary()) + QString("i");
                         answer += bufferStr;
                     }
                 }
@@ -155,7 +152,7 @@ void TApplication::recieve(QByteArray msg)
                     separator = QString("-");
                 }
 
-                bufferStr << QString::number(determinant.getReal()) + separator + QString::number(determinant.getImaginary());
+                bufferStr << QString::number(determinant.getReal()) + separator + QString::number(determinant.getImaginary()) + QString("i");
 
                 answer += bufferStr;
                 answer << QString().setNum(PRINT_DETERMINANT_RESPONSE);
@@ -168,32 +165,33 @@ void TApplication::recieve(QByteArray msg)
                 answer << QString().setNum(PRINT_RANK_RESPONSE);
                 break;
             }
-         }
         }
-        case RATIONAL_MODE: {
-            SqareMatrix<TRational>* matrix = new SqareMatrix<TRational>(matrixSize);
-            //Инициализируем матрицу, которую получили от клиента
-            for (int row = 0; row < matrixSize; row++) {
-                for (int column = 0; column < matrixSize; column++) {
-                    QString currentNumStr = numbers[row * matrixSize + column];
-                    QStringList parts = currentNumStr.split('/');
-                    switch (parts.length()) {
-                    case 1:
-                        matrix->inputValue(TRational(parts[0].toInt(), 1), row, column);
-                        break;
-                    case 2:
-                        matrix->inputValue(TRational(parts[0].toInt(), parts[1].toInt()), row, column);
-                        break;
-                    default:
-                        matrix->inputValue(TRational(), row, column);
-                    }
+        break;
+      }
+    case RATIONAL_MODE: {
+        SqareMatrix<TRational>* matrix = new SqareMatrix<TRational>(matrixSize);
+        //Инициализируем матрицу, которую получили от клиента
+        for (int row = 0; row < matrixSize; row++) {
+            for (int column = 0; column < matrixSize; column++) {
+                QString currentNumStr = numbers[row * matrixSize + column];
+                QStringList parts = currentNumStr.split('/');
+                switch (parts.length()) {
+                case 1:
+                    matrix->inputValue(TRational(parts[0].toInt(), 1), row, column);
+                    break;
+                case 2:
+                    matrix->inputValue(TRational(parts[0].toInt(), parts[1].toInt()), row, column);
+                    break;
+                default:
+                    matrix->inputValue(TRational(), row, column);
                 }
             }
-            //Матрица для ответа
-            SqareMatrix<TRational> responseMatrix = SqareMatrix<TRational>(matrixSize);
-            //Сообщаяем в консоли о сообщении
-            qInfo("The message has been received");
-            switch(query) {
+        }
+        //Матрица для ответа
+        SqareMatrix<TRational> responseMatrix = SqareMatrix<TRational>(matrixSize);
+        //Сообщаяем в консоли о сообщении
+        qInfo("The message has been received");
+        switch(query) {
             case PRINT_TRANSPOSE_REQUEST: {
                 //Вычисление транспонированной матрицы
                 responseMatrix = matrix->calculateTranspose();
@@ -236,11 +234,15 @@ void TApplication::recieve(QByteArray msg)
                 answer << QString().setNum(PRINT_RANK_RESPONSE);
                 break;
             }
+            }
+        break;
         }
     }
-
-
-
     //Отправляем ответ
     communicator->send(answer.toUtf8());
 }
+
+
+
+
+

@@ -16,6 +16,7 @@ public:
 
 public:
     TRational();
+    TRational(int);
     TRational(double, double);
 
     //Приведение к double виду

@@ -57,7 +57,7 @@ SqareMatrix<number>::SqareMatrix(int n) : Matrix<number>(n, n) {}
 template<class number>
 number SqareMatrix<number>::calculateDetermenant() {
 
-    number determenant = number(1, 1);
+    number determenant = 1;
     SqareMatrix mat = SqareMatrix<number>(this->dimension);
 
     for (int i = 0; i < this->dimension; i++)

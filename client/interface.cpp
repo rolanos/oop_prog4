@@ -6,7 +6,7 @@ TInterface::TInterface(QWidget *parent)
 {
     int width= 800;
     int height =480;
-    setWindowTitle("Клиент ПР_5");
+    setWindowTitle("Клиент ПР_6. Будило Иванова Костенко");
     setFixedSize(width, height);
 
     matrixSizeTitle = new QLabel("Размер матрицы:", this);
@@ -14,6 +14,16 @@ TInterface::TInterface(QWidget *parent)
     matrixSizeField = new QLineEdit(this);
     matrixSizeField->setGeometry(width * 0.2, height * 0.07, width * 0.05, width * 0.05);
     matrixSizeField->setValidator( new QIntValidator(0, 20, this));
+
+    double_mode = new QRadioButton("Вещественные", this);
+    double_mode->setGeometry(width * 0.3, height * 0.07, width * 0.15, width * 0.05);
+    double_mode->setChecked(true);
+
+    complex_mode = new QRadioButton("Комплексные", this);
+    complex_mode->setGeometry(width * 0.5, height * 0.07, width * 0.15, width * 0.05);
+
+    rational_mode = new QRadioButton("Рациональные", this);
+    rational_mode->setGeometry(width * 0.7, height * 0.07, width * 0.15, width * 0.05);
 
     matrixTitle = new QLabel("Matrix elements:", this);
     matrixTitle->setGeometry(width * 0.05, width * 0.15, width * 0.1, width * 0.05);
@@ -63,6 +73,9 @@ TInterface::~TInterface() {
     delete transposeButton;
     delete determinantButton;
     delete rankButton;
+    delete double_mode;
+    delete complex_mode;
+    delete rational_mode;
 }
 
 //slots
@@ -79,18 +92,51 @@ void TInterface::formRequest()
     QString msg;
     //Добавляем размер матрицы в запрос
     msg << matrixSizeField->text();
-
+    if (double_mode->isChecked()) {
+        msg << QString().setNum(DOUBLE_MODE);
+    }
+    if (complex_mode->isChecked()) {
+        msg << QString().setNum(COMPLEX_MODE);
+    }
+    if (rational_mode->isChecked()) {
+        msg << QString().setNum(RATIONAL_MODE);
+    }
     //Добавляем элементы матрицы в запрос
     for (int i = 0; i < matrixSizeField->text().toInt(); i++) {
         for (int j = 0; j < matrixSizeField->text().toInt(); j++) {
             QTableWidgetItem *item = matrixTable->item(i,j);
             if (NULL != item) {
                 QString s = item->text();
-                QStringList nums = s.split("/");
-                if(nums.length() >= 1){
+                if (double_mode->isChecked()) {
                     msg << s;
-                } else {
-                    msg<<"0/1";
+                }
+                else {
+                    if (complex_mode->isChecked()) {
+                        if(s.indexOf('i')) {
+                            s.removeAt(s.indexOf('i'));
+                        }
+                        QStringList numsWithPositive = s.split('+');
+                        QStringList numsWithNegative = s.split('-');
+                        if(numsWithPositive.length() == 2 || numsWithNegative.length() == 2) {
+                            if (numsWithPositive.length() == 2) {
+                                msg << numsWithPositive.first() + QString("+") + numsWithPositive.last();
+                            }
+                            else {
+                                msg << numsWithNegative.first() + QString("+") + numsWithNegative.last();
+                            }
+                        }
+                        else {
+                            msg << numsWithPositive.first() + QString("+0");
+                        }
+                    } else {
+
+                        QStringList nums = s.split("/");
+                        if(nums.length() >= 1){
+                            msg << s;
+                        } else {
+                            msg<<"0/1";
+                        }
+                    }
                 }
             }
         }
@@ -132,6 +178,7 @@ void TInterface::answer(QString msg)
         //Инициализируем выходную матрицу данными, которые пришли нам в ответ от server
         martixOutput->setRowCount(size);
         martixOutput->setColumnCount(size);
+        martixOutput->clearContents();
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                  QTableWidgetItem *item = martixOutput->item(row, column);

@@ -97,7 +97,11 @@ Matrix<number>& Matrix<number>::calculateTranspose() {
 }
 template <class number>
 void Matrix<number>::swapRows(int first, int second) {
-    swap(matrix[first], matrix[second]);
+    for (int i = 0; i < columnNumber; i++) {
+        number buffer = matrix[first][i];
+        inputValue(matrix[second][i], first, i);
+        inputValue(buffer, second, i);
+    }
 }
 template <class number>
 bool Matrix<number>::isSqare() {

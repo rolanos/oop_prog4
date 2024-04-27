@@ -11,6 +11,7 @@ class TComplex
 public:
     TComplex();
     TComplex(const double& r);
+    TComplex(double, double);
 
 
     TComplex operator* (TComplex);
@@ -18,6 +19,9 @@ public:
     TComplex operator/ (TComplex);
     TComplex operator +(const TComplex&);
     TComplex operator -(const TComplex&);
+
+    double getReal();
+    double getImaginary();
 
     bool operator == (const int& r);
     operator bool() const;

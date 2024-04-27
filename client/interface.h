@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
@@ -32,6 +33,11 @@ class TInterface : public QWidget
     QPushButton* transposeButton;
     QPushButton* determinantButton;
     QPushButton* rankButton;
+
+    //Radio
+    QRadioButton* double_mode;
+    QRadioButton* complex_mode;
+    QRadioButton* rational_mode;
 
 public:
     TInterface(QWidget *parent = nullptr);

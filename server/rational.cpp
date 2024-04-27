@@ -6,6 +6,11 @@ TRational::TRational() {
     denominator = 1;
 }
 
+TRational::TRational(int value) {
+    numerator = value;
+    denominator = 1;
+}
+
 TRational::TRational(double num, double denom) : TRational() {
     if(denom == 0 ){
         numerator = num;
